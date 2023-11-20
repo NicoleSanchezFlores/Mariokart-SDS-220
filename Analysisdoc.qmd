@@ -11,3 +11,10 @@ library(readr)
 mariokart <- read_csv("mariokart.csv")
 View(mariokart)
 ```
+
+```{r}
+mean_total_price <-
+mean(mariokart$total_pr)
+
+mean_total_price
+```
