@@ -1,0 +1,13 @@
+---
+title: "Mario_kart_analysis"
+format: html
+editor: visual
+---
+
+We're importing the dataset from the Mario Kart
+
+```{r}
+library(readr)
+mariokart <- read_csv("mariokart.csv")
+View(mariokart)
+```
