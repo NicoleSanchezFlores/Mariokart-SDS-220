@@ -6,15 +6,71 @@ editor: visual
 
 We're importing the dataset from the Mario Kart
 
-```{r}
+```{r, echo = FALSE}
+library(tidyverse)
+library(knitr)
+library(openintro)
 library(readr)
-mariokart <- read_csv("mariokart.csv")
-View(mariokart)
+```
+
+
+```{r}
+mario_kart_selected <-
+  mariokart |>
+  select(id, cond, total_pr)
+
 ```
 
 ```{r}
-mean_total_price <-
-mean(mariokart$total_pr)
+mean_by_group <- mario_kart_selected |>
+  group_by(cond) |>
+  summarise(mean_value = mean(total_pr))
 
-mean_total_price
+print(mean_by_group)
+```
+
+```{r}
+mario_kart_t_test<-
+t.test(total_pr ~ cond, data = mariokart, alternative ="t")
+
+mario_kart_t_test
+
+```
+
+
+This is our boxplot
+```{r}
+mariokart |>
+  ggplot(aes(x=cond, y=total_pr), color=cond) +  
+  geom_boxplot() +
+  coord_flip()
+
+```
+
+
+
+
+
+```{r}
+mariokart |>
+  ggplot(aes(x=cond, y=total_pr), color=cond) +  
+  geom_boxplot() +
+  coord_flip()
+
+```
+
+
+```{r}
+result_table <- data.frame(
+  new_mean = 53.77068,
+  used_mean = 47.14810,
+  t_Statistic = mario_kart_t_test$statistic,
+  Degrees_of_Freedom = mario_kart_t_test$parameter,
+  P_Value = mario_kart_t_test$p.value
+)
+
+result_table_formatted <- kable(result_table, caption = "Mario Kart T-Test Results by Used and New")
+
+result_table_formatted
+
 ```
