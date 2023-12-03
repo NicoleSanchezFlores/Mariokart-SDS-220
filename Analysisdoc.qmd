@@ -28,15 +28,6 @@ mariokart |>
 
 ```
 
-```{r}
-mariokart |>
-  ggplot(aes(x=cond, y=total_pr), color=cond) +  
-  geom_boxplot() +
-  coord_flip()
-
-```
-
-
 
 #Now we have to remove the outliers
 
@@ -53,15 +44,17 @@ used_mariokart <-
   arrange(used_mariokart,desc(total_pr))
 
 used_mariokart <-
-   filter(used_mariokart, !(total_pr %in% c(326.51, 118.5))) |>
+   filter(used_mariokart, !(total_pr %in% c(326.51, 118.5,65.02,64.50))) 
+
+used_mariokart<-
    arrange(used_mariokart,desc(total_pr))
   
 new_mariokart <-
   mario_kart_selected |>
-  filter(cond== "new") |>
-  
-  new_mariokart <-
-  filter(new_mariokart, !(total_pr %in% c(75.00, 71.00))) |>
+  filter(cond== "new") 
+  filter(new_mariokart, !(total_pr %in% c(75))) 
+
+new_mariokart <-
   arrange(new_mariokart,desc(total_pr)) 
 
 ```
@@ -69,10 +62,10 @@ new_mariokart <-
 #Here we removed the outliers
 ```{r}
 mario_kart_selected <-
-  filter(mario_kart_selected, !(total_pr %in% c(75, 71))) 
+  filter(mario_kart_selected, !(total_pr %in% c(75))) 
 
 mario_kart_selected <-
-    filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5)))
+    filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5, 65.02, 64.50)))
 ```
 
 
