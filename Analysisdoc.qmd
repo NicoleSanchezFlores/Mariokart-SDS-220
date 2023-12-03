@@ -6,64 +6,100 @@ editor: visual
 
 We're importing the dataset from the Mario Kart
 
+```{r}
+options(digits = 5)
+
+```
+
+
 ```{r, echo = FALSE}
 library(tidyverse)
 library(knitr)
 library(openintro)
 library(readr)
 ```
+#This is our boxplot
 
+```{r}
+mariokart |>
+  ggplot(aes(x=cond, y=total_pr), color=cond) +  
+  geom_boxplot() +
+  coord_flip()
+
+```
+
+
+#Now we have to remove the outliers
 
 ```{r}
 mario_kart_selected <-
   mariokart |>
-  select(id, cond, total_pr)
+  select(id, cond, total_pr) |>
+  arrange(mario_kart_selected,desc(total_pr))
+  
+
+used_mariokart <-
+  mario_kart_selected |>
+  filter(cond=="used") |>
+  arrange(used_mariokart,desc(total_pr))
+
+used_mariokart <-
+   filter(used_mariokart, !(total_pr %in% c(326.51, 118.5,65.02,64.50))) 
+
+used_mariokart<-
+   arrange(used_mariokart,desc(total_pr))
+  
+new_mariokart <-
+  mario_kart_selected |>
+  filter(cond== "new") 
+  filter(new_mariokart, !(total_pr %in% c(75))) 
+
+new_mariokart <-
+  arrange(new_mariokart,desc(total_pr)) 
 
 ```
 
+#Here we removed the outliers
+```{r}
+mario_kart_selected <-
+  filter(mario_kart_selected, !(total_pr %in% c(75))) 
+
+mario_kart_selected <-
+    filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5, 65.02, 64.50)))
+```
+
+
+#This is our mean by group
 ```{r}
 mean_by_group <- mario_kart_selected |>
   group_by(cond) |>
   summarise(mean_value = mean(total_pr))
 
+New_mean <-
+  mean_by_group |>
+  filter(cond == "new")
+
+Used_mean <-
+  mean_by_group |>
+  filter(cond == "used")
+
+
 print(mean_by_group)
 ```
 
+#This is our T- Test for Mario Kart
 ```{r}
 mario_kart_t_test<-
-t.test(total_pr ~ cond, data = mariokart, alternative ="t")
+t.test(total_pr ~ cond, data = mario_kart_selected, alternative ="t")
 
 mario_kart_t_test
 
 ```
 
-
-This is our boxplot
-```{r}
-mariokart |>
-  ggplot(aes(x=cond, y=total_pr), color=cond) +  
-  geom_boxplot() +
-  coord_flip()
-
-```
-
-
-
-
-
-```{r}
-mariokart |>
-  ggplot(aes(x=cond, y=total_pr), color=cond) +  
-  geom_boxplot() +
-  coord_flip()
-
-```
-
-
 ```{r}
 result_table <- data.frame(
-  new_mean = 53.77068,
-  used_mean = 47.14810,
+  new_mean = New_mean$mean_value,
+  used_mean = Used_mean$mean_value,
   t_Statistic = mario_kart_t_test$statistic,
   Degrees_of_Freedom = mario_kart_t_test$parameter,
   P_Value = mario_kart_t_test$p.value
