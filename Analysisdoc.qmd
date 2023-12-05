@@ -11,40 +11,42 @@ options(digits = 5)
 
 ```
 
-
 ```{r, echo = FALSE}
 library(tidyverse)
 library(knitr)
 library(openintro)
 library(readr)
 ```
+
 #This is our boxplot
 
 ```{r}
 mariokart |>
-  ggplot(aes(x=cond, y=total_pr), color=cond) +  
+  ggplot(aes(x=cond, y=total_pr, color=cond)) +  
   geom_boxplot() +
-  coord_flip()
+  coord_flip() +
+  scale_color_brewer(palette = "Set1", direction = -1)
 
 ```
-
-
-#Now we have to remove the outliers
 
 ```{r}
 mario_kart_selected <-
   mariokart |>
-  select(id, cond, total_pr) |>
+  select(id, cond, total_pr) 
+
+mario_kart_selected <-
   arrange(mario_kart_selected,desc(total_pr))
   
 
 used_mariokart <-
   mario_kart_selected |>
-  filter(cond=="used") |>
+  filter(cond=="used") 
+
+used_mariokart<-
   arrange(used_mariokart,desc(total_pr))
 
 used_mariokart <-
-   filter(used_mariokart, !(total_pr %in% c(326.51, 118.5,65.02,64.50))) 
+   filter(used_mariokart, !(total_pr %in% c(326.51, 118.5))) 
 
 used_mariokart<-
    arrange(used_mariokart,desc(total_pr))
@@ -52,24 +54,23 @@ used_mariokart<-
 new_mariokart <-
   mario_kart_selected |>
   filter(cond== "new") 
-  filter(new_mariokart, !(total_pr %in% c(75))) 
 
 new_mariokart <-
   arrange(new_mariokart,desc(total_pr)) 
 
 ```
 
-#Here we removed the outliers
+Interquartile
+
+#Here we removed the outliers. We removed the outliers which are 326.51, and 118.5
+
 ```{r}
 mario_kart_selected <-
-  filter(mario_kart_selected, !(total_pr %in% c(75))) 
-
-mario_kart_selected <-
-    filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5, 65.02, 64.50)))
+    filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5)))
 ```
 
-
 #This is our mean by group
+
 ```{r}
 mean_by_group <- mario_kart_selected |>
   group_by(cond) |>
@@ -88,6 +89,7 @@ print(mean_by_group)
 ```
 
 #This is our T- Test for Mario Kart
+
 ```{r}
 mario_kart_t_test<-
 t.test(total_pr ~ cond, data = mario_kart_selected, alternative ="t")
