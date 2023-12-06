@@ -92,7 +92,7 @@ print(mean_by_group)
 
 ```{r}
 mario_kart_t_test<-
-t.test(total_pr ~ cond, data = mario_kart_selected, alternative ="t")
+t.test(df = 139, total_pr ~ cond, data = mario_kart_selected, alternative ="t")
 
 mario_kart_t_test
 
@@ -111,4 +111,21 @@ result_table_formatted <- kable(result_table, caption = "Mario Kart T-Test Resul
 
 result_table_formatted
 
+```
+
+```{r}
+filter(mario_kart_selected, cond %in% c("new", "used"))|>
+  group_by(cond) |>
+  summarise(mean = mean(total_pr), 
+            sd = sd(total_pr), 
+            median = median(total_pr), 
+            min = min(total_pr), 
+            max = max(total_pr), 
+            count = n()) |>
+  kable(digits = 1)
+```
+
+```{r}
+mario_kart_selected |>
+  filter(cond == "used") 
 ```
