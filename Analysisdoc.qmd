@@ -113,6 +113,8 @@ result_table_formatted
 
 ```
 
+#Now we make a table
+
 ```{r}
 filter(mario_kart_selected, cond %in% c("new", "used"))|>
   group_by(cond) |>
@@ -123,9 +125,4 @@ filter(mario_kart_selected, cond %in% c("new", "used"))|>
             max = max(total_pr), 
             count = n()) |>
   kable(digits = 1)
-```
-
-```{r}
-mario_kart_selected |>
-  filter(cond == "used") 
 ```
