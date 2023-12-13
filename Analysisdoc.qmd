@@ -1,8 +1,12 @@
----
-title: "Mario_kart_analysis"
-format: html
-editor: visual
----
+-   <div>
+
+    ---
+    title: "Mario_kart_analysis"
+    format: html
+    editor: visual
+    ---
+
+    </div>
 
 We're importing the dataset from the Mario Kart
 
@@ -42,8 +46,6 @@ used_mariokart <-
   mario_kart_selected |>
   filter(cond=="used") 
 
-used_mariokart<-
-  arrange(used_mariokart,desc(total_pr))
 
 used_mariokart <-
    filter(used_mariokart, !(total_pr %in% c(326.51, 118.5))) 
@@ -92,7 +94,7 @@ print(mean_by_group)
 
 ```{r}
 mario_kart_t_test<-
-t.test(df = 139, total_pr ~ cond, data = mario_kart_selected, alternative ="t")
+t.test(total_pr ~ cond, data = mario_kart_selected, alternative ="t")
 
 mario_kart_t_test
 
@@ -104,16 +106,17 @@ result_table <- data.frame(
   used_mean = Used_mean$mean_value,
   t_Statistic = mario_kart_t_test$statistic,
   Degrees_of_Freedom = mario_kart_t_test$parameter,
-  P_Value = mario_kart_t_test$p.value
+  P_Value = mario_kart_t_test$p.value,
+  Lower_CI_95 = mario_kart_t_test$conf.int[1],
+  Upper_CI_95= mario_kart_t_test$conf.int[2]
 )
-
 result_table_formatted <- kable(result_table, caption = "Mario Kart T-Test Results by Used and New")
 
 result_table_formatted
 
 ```
 
-#Now we make a table
+#N
 
 ```{r}
 filter(mario_kart_selected, cond %in% c("new", "used"))|>
@@ -124,5 +127,5 @@ filter(mario_kart_selected, cond %in% c("new", "used"))|>
             min = min(total_pr), 
             max = max(total_pr), 
             count = n()) |>
-  kable(digits = 1)
+  kable(digits = 3, caption = "Summary Statistics of Mario Kart")
 ```
