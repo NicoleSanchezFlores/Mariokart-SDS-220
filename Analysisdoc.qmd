@@ -1,12 +1,11 @@
--   <div>
-
-    ---
-    title: "Mario_kart_analysis"
-    format: html
-    editor: visual
-    ---
-
-    </div>
+---
+title: "Mario_kart_analysis"
+format: html
+editor: visual
+execute:
+      echo: false
+      warniing: false
+---
 
 We're importing the dataset from the Mario Kart
 
@@ -16,24 +15,29 @@ options(digits = 5)
 ```
 
 ```{r, echo = FALSE}
+#| include: false
+
 library(tidyverse)
 library(knitr)
 library(openintro)
 library(readr)
 ```
 
-#This is our boxplot
+This is our boxplot
 
 ```{r}
 mariokart |>
   ggplot(aes(x=cond, y=total_pr, color=cond)) +  
   geom_boxplot() +
   coord_flip() +
-  scale_color_brewer(palette = "Set1", direction = -1)
+  scale_color_brewer(palette = "Set1", direction = -1, name = "Condition of the Game") +
+  labs(x= "Condition", y="Total Price in Dollars")
+  
 
 ```
 
 ```{r}
+#| include: false
 mario_kart_selected <-
   mariokart |>
   select(id, cond, total_pr) 
@@ -64,16 +68,24 @@ new_mariokart <-
 
 Interquartile
 
-#Here we removed the outliers. We removed the outliers which are 326.51, and 118.5
+Here we removed the outliers. We removed the outliers which are 326.51, and 118.5 from the old group of games
 
 ```{r}
 mario_kart_selected <-
     filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5)))
+
+mario_kart_selected |>
+  ggplot(aes(x=cond, y=total_pr, color=cond)) +  
+  geom_boxplot() +
+  coord_flip() +
+  scale_color_brewer(palette = "Set1", direction = -1, name = "Condition of the Game") +
+  labs(x= "Condition", y="Total Price in Dollars")
+
 ```
 
-#This is our mean by group
-
 ```{r}
+#| include: false
+
 mean_by_group <- mario_kart_selected |>
   group_by(cond) |>
   summarise(mean_value = mean(total_pr))
@@ -90,9 +102,9 @@ Used_mean <-
 print(mean_by_group)
 ```
 
-#This is our T- Test for Mario Kart
-
 ```{r}
+#| include: false
+
 mario_kart_t_test<-
 t.test(total_pr ~ cond, data = mario_kart_selected, alternative ="t")
 
@@ -100,7 +112,10 @@ mario_kart_t_test
 
 ```
 
+T Test
+
 ```{r}
+
 result_table <- data.frame(
   new_mean = New_mean$mean_value,
   used_mean = Used_mean$mean_value,
@@ -116,9 +131,11 @@ result_table_formatted
 
 ```
 
-#N
+Summary Statistics
 
 ```{r}
+
+
 filter(mario_kart_selected, cond %in% c("new", "used"))|>
   group_by(cond) |>
   summarise(mean = mean(total_pr), 
