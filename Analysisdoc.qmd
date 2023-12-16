@@ -7,6 +7,8 @@ execute:
       warniing: false
 options:
 include: FALSE
+author: Nicole, Skylar, and Helen
+
 ---
 
 ```{r}
@@ -61,9 +63,6 @@ SDS 220 Professor Schwab Nicole, Skylar, and Helen
 The Wonders of Mario: 
 Analyzing Used and New Games on Ebay
     
-SDS 220
-Professor Schwab
-Nicole, Skylar, and Helen
 
 
 # Introduction
@@ -71,6 +70,7 @@ Mario Kart is a series of popular go-kart racing games based on the Mario multim
 
 In order to answer the question, we will be analyzing the data using the hypothesis test for the difference in two populations of means. Our explanatory variable is `Cond` and our response variable is `Total_pr.` We will also be visualizing the data through graphs created in R. Based on our findings, there is a difference between the average of the total price between used and new games.
 # Exploratory Data Analysis
+
 ###Data Analysis 
 For our data analysis, multivariate analysis is used for looking at multiple variables simultaneously. This allows us to find correlation between them and we use multivariate visualization to study complex sets of data. In our `mariokart` case we conducted multivariate analysis to evaluate how the prices for new games differ from old games.
 The `mario kart` dataset includes a data frame with 143 observations on 12 numeric variables such as start price `start_pr` and seller rate `seller_rate`. 
@@ -80,6 +80,7 @@ To conduct our hypothesis test, the variables we are investigating include...
 `Cond`: The conditions of the games at the time of being sold, which are categorized in R as being either new or used. This is the explanatory variable. 
 `Total_pr`: The total price of the game. This was found by adding the auction price with the shipping price. This is the response variable.
 `Id`: The auction ID assigned by Ebay.
+
 ###Data Wrangling
 Graphing in R allows us to visual our data, study the shape of the graph, and more easily identify outliers. We first made a barplot based on our two variables, new and old. 
 
@@ -170,11 +171,13 @@ filter(mario_kart_selected, cond %in% c("new", "used"))|>
 # Results
 To answer our research question, we are using a T. hypothesis test for the difference in two populations of means. There are many types of hypothesis tests, but this is the most appropriate as we want to find the average (mean) of the two variables.
 Our steps include the following order: 
+
 ###Step 1: Create our null hypothesis and alternative hypothesis
 Ho: Mn - Mu = 0
 This is the null hypothesis. It represents that there is no difference in the average of total price between the two variables, used vs new games.
 Ha: Mn - Mu ≠ 0
 This is the alternative hypothesis. It is the opposite of null, representing that there is a difference between the two variables. 
+
 ###Step 2: Check conditions
 For a difference of means, we have two conditions to check our data.
 Independence between and within?: 
