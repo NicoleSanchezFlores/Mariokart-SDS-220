@@ -5,9 +5,9 @@ editor: visual
 execute:
       echo: false
       warniing: false
+options:
+include: FALSE
 ---
-
-We're importing the dataset from the Mario Kart
 
 ```{r}
 options(digits = 5)
@@ -23,18 +23,7 @@ library(openintro)
 library(readr)
 ```
 
-This is our boxplot
 
-```{r}
-mariokart |>
-  ggplot(aes(x=cond, y=total_pr, color=cond)) +  
-  geom_boxplot() +
-  coord_flip() +
-  scale_color_brewer(palette = "Set1", direction = -1, name = "Condition of the Game") +
-  labs(x= "Condition", y="Total Price in Dollars")
-  
-
-```
 
 ```{r}
 #| include: false
@@ -65,12 +54,69 @@ new_mariokart <-
   arrange(new_mariokart,desc(total_pr)) 
 
 ```
+# The Wonders of Mario: Analyzing Used and New Games on Ebay
 
-Interquartile
+SDS 220 Professor Schwab Nicole, Skylar, and Helen
+
+The Wonders of Mario: 
+Analyzing Used and New Games on Ebay
+    
+SDS 220
+Professor Schwab
+Nicole, Skylar, and Helen
+
+
+# Introduction
+Mario Kart is a series of popular go-kart racing games based on the Mario multimedia franchise (Mario Kart First developed and published by Nintendo in 1992, players use Nintendo consoles to race against their friends. On `openintro.org`, a nonprofit of textbooks and resources relating to introductory statistics, and in the `openintro` R package, there is a data set called `mario kart`. Based on the data which includes October 2009 auction data from Ebay for the Nintendo Wii, our group is interested in the following research question: “In early October 2009, is there is a difference between the average of the total price between used and new games?” Given that Ebay is one of the most popular ecommerce sites in the United States for selling used and new products, we are motivated to conduct this study as we are interested in understanding how sellers might market used games compared to the game’s original price. (We also were interested in this database as we like Mario and it reminds us of our childhood). Given that people generally want new versus used things, we predict that there is a difference in prices with used games being marketed at a lower price. 
+
+In order to answer the question, we will be analyzing the data using the hypothesis test for the difference in two populations of means. Our explanatory variable is `Cond` and our response variable is `Total_pr.` We will also be visualizing the data through graphs created in R. Based on our findings, there is a difference between the average of the total price between used and new games.
+# Exploratory Data Analysis
+###Data Analysis 
+For our data analysis, multivariate analysis is used for looking at multiple variables simultaneously. This allows us to find correlation between them and we use multivariate visualization to study complex sets of data. In our `mariokart` case we conducted multivariate analysis to evaluate how the prices for new games differ from old games.
+The `mario kart` dataset includes a data frame with 143 observations on 12 numeric variables such as start price `start_pr` and seller rate `seller_rate`. 
+Here is a tibble of the data with the 143 observations. 
+SHOW THE TIBBLE CODE
+To conduct our hypothesis test, the variables we are investigating include...
+`Cond`: The conditions of the games at the time of being sold, which are categorized in R as being either new or used. This is the explanatory variable. 
+`Total_pr`: The total price of the game. This was found by adding the auction price with the shipping price. This is the response variable.
+`Id`: The auction ID assigned by Ebay.
+###Data Wrangling
+Graphing in R allows us to visual our data, study the shape of the graph, and more easily identify outliers. We first made a barplot based on our two variables, new and old. 
+
+```{r, include=TRUE}
+mariokart |>
+  ggplot(aes(x=cond, y=total_pr, color=cond)) +  
+  geom_boxplot() +
+  coord_flip() +
+  scale_color_brewer(palette = "Set1", direction = -1, name = "Condition of the Game") +
+  labs(x= "Condition", y="Total Price in Dollars")
+
+```
+
+
+
+When data wrangling, it is important to remove the two extreme outliers, visible on figure A, `326.51` and `118.5` as they can skew our data. Outliers should only be kept when they can support our research; in these two cases, we can see from the auction titles that they included other items in their auctions besides the game, which we don’t need. Upon removal, our data is more normal and there is now 141 from 143 observations. 
+
+```{r}
+mario_kart_selected <-
+	filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5)))
+
+mario_kart_selected
+```
+
+```{r}
+mario_kart_selected |>
+  ggplot(aes(x=cond, y=total_pr, color=cond)) +  
+  geom_boxplot() +
+  coord_flip() +
+  scale_color_brewer(palette = "Set1", direction = -1, name = "Condition of the Game") +
+  labs(x= "Condition", y="Total Price in Dollars")
+
+```
 
 Here we removed the outliers. We removed the outliers which are 326.51, and 118.5 from the old group of games
 
-```{r}
+```{r, include=TRUE }
 mario_kart_selected <-
     filter(mario_kart_selected, !(total_pr %in% c(326.51, 118.5)))
 
@@ -102,6 +148,61 @@ Used_mean <-
 print(mean_by_group)
 ```
 
+
+
+With the difference of means, we need to calculate both the means for new games and the means for used games. For the two means, we filtered the data based on their condition. We arranged the data sets by descending order of the total price.
+
+Summary Statistics
+
+```{r, include=TRUE}
+
+filter(mario_kart_selected, cond %in% c("new", "used"))|>
+  group_by(cond) |>
+  summarise(mean = mean(total_pr), 
+            sd = sd(total_pr), 
+            median = median(total_pr), 
+            min = min(total_pr), 
+            max = max(total_pr), 
+            count = n()) |>
+  kable(digits = 3, caption = "Summary Statistics of Mario Kart")
+```
+
+# Results
+To answer our research question, we are using a T. hypothesis test for the difference in two populations of means. There are many types of hypothesis tests, but this is the most appropriate as we want to find the average (mean) of the two variables.
+Our steps include the following order: 
+###Step 1: Create our null hypothesis and alternative hypothesis
+Ho: Mn - Mu = 0
+This is the null hypothesis. It represents that there is no difference in the average of total price between the two variables, used vs new games.
+Ha: Mn - Mu ≠ 0
+This is the alternative hypothesis. It is the opposite of null, representing that there is a difference between the two variables. 
+###Step 2: Check conditions
+For a difference of means, we have two conditions to check our data.
+Independence between and within?: 
+We can say that our Dataset is independent because each of the listings are for different sale
+Normality: There were two outliers, but we removed them from our data as they were not necessary to our research. 
+
+
+###Step 3: Find the null hypothesis distribution 
+
+This is the distribution formula: Mn - Mu ~ N(O, SE)
+
+The values in the null hypothesis distribution include:
+`Mn` as mean of new games and `Mu` as mean of used games
+O as difference of means
+SE as standard error  
+
+
+###Step 4: Find the t distribution 
+In order to find the t distribution, we use a t.test in R.
+t.test(x= , alternative= , mu=)
+t.test(total_pr ~ cond, data = mario_kart_selected, alternative ="t")
+The value include: 
+total_pr ~ cond which specifies the formula for the t-test. It compares total_pr between the new and used games 
+data = mario_kart_selected specifies our new data frame we created with the filters on the outliers and conditions 
+alternative = "two.sided" indicates a two-sided t-test. 
+Based on the output of the Welch Two Sample t-test, we learned: 
+
+T Test
 ```{r}
 #| include: false
 
@@ -112,9 +213,7 @@ mario_kart_t_test
 
 ```
 
-T Test
-
-```{r}
+```{r, include=TRUE}
 
 result_table <- data.frame(
   new_mean = New_mean$mean_value,
@@ -131,18 +230,36 @@ result_table_formatted
 
 ```
 
-Summary Statistics
+Degrees of freedom = df = 141-2=139
 
-```{r}
+The standard error = SE = 7.42 59+7.3282=54.7659+53.2982 = 0.93+0.65 =1.58  = 1.26
+
+Test Statistic = 53.8-42.91.26 = 8.65
+
+###Step 5: Use pt() function to find the t.distribution
+When you put 8.65 and the degrees of freedom into the Studio's function pt(), you get pt(8.65, df=141, lower.tail = FALSE) which equals to a p-value of 5.2017e-15
 
 
-filter(mario_kart_selected, cond %in% c("new", "used"))|>
-  group_by(cond) |>
-  summarise(mean = mean(total_pr), 
-            sd = sd(total_pr), 
-            median = median(total_pr), 
-            min = min(total_pr), 
-            max = max(total_pr), 
-            count = n()) |>
-  kable(digits = 3, caption = "Summary Statistics of Mario Kart")
+
+```{r, include=TRUE}
+mario_kart_pt <- pt(8.65, df= 141, lower.tail = FALSE)
+mario_kart_pt
 ```
+
+###Step 6: Conclude and Interpret the Results
+Since we use an alpha of 0.05 and the p-value was 5.2017e-15, we reject the null hypothesis as the p value is less than alpha. This means there is a difference between the averages of new and used video games total prices.
+
+
+Based on the data we found, our completed Null Hypothesis is:
+ Mn -Mu ~ N(O, 1.26)
+Confidence intervals:
+We used 95% confidence intervals to find the lower and upper of our confidence interval range. Using R, we found lower as 8.41 and upper as 12.4.
+
+
+# Discussion/Conclusion: 
+As a reminder, the research question we are interested in answering is “In early October 2009, is there a difference between the average in the total price of used and new games?” Based on our findings, the mean for new is “53.771”, the mean for use is “42.871,” and we reject the null hypothesis as the p value is less than alpha. This means that there is a difference between the average of the total prices and our prediction that there is a difference in total prices with used games is correct. Additionally, since the mean for used is smaller than mean for new, this indicates that used games are marketed at a lower price.
+It is important to acknowledge limitations of our data. Given that the dataset only measures total prices from one week of eBay sales, it is not representative of how sellers generally market prices for used games. As such, the means show a difference, but not a magnitude of the data. Another limitation is that we could have a Type I error, which means that even though we reject the null hypothesis, it could be a false positive in which null is actually true.
+Our project could be extended to include additional explanatory variables in the future. One idea is to use the variable, `n_bids` or number of bids to see if total price and popularity of the game may be attributed to the bids. We will do a ANOVA test to determine the differences in the results from these seemingly unrelated groups.
+
+
+
